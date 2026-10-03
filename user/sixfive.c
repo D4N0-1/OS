@@ -10,30 +10,26 @@ sixfive(int fd)
 {
   int n;
   int sum = 0;
-  enum state {DELIM,NUMBER,OTHER};
+  enum state { DELIM, NUMBER, OTHER };
   enum state s = NUMBER;
   while ((n = read(fd, &ch, 1)) > 0) {
-    if(strchr(delims,ch)){
-      if(s == NUMBER){
-        if(sum % 5 == 0 || sum % 6 == 0){
-          fprintf(1,"%d\n",sum);
+    if (strchr(delims, ch)) {
+      if (s == NUMBER) {
+        if (sum % 5 == 0 || sum % 6 == 0) {
+          fprintf(1, "%d\n", sum);
         }
         sum = 0;
       }
       s = DELIM;
-    }
-    else if(strchr(nums,ch)){
-      if(s == DELIM)
-      {
+    } else if (strchr(nums, ch)) {
+      if (s == DELIM) {
         sum = atoi(&ch);
         s = NUMBER;
-      }
-      else if (s == NUMBER){
-        sum = sum*10;
+      } else if (s == NUMBER) {
+        sum = sum * 10;
         sum = sum + atoi(&ch);
       }
-    }
-    else{
+    } else {
       s = OTHER;
     }
   }
@@ -41,9 +37,8 @@ sixfive(int fd)
     fprintf(2, "sixfive: read error\n");
     exit(1);
   }
-  if(sum %5 == 0 || sum % 6 ==0)
-  {
-    fprintf(1,"%d\n",sum);
+  if (sum % 5 == 0 || sum % 6 == 0) {
+    fprintf(1, "%d\n", sum);
   }
 }
 

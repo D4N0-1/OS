@@ -5,8 +5,8 @@
 int
 main(int argc, char *argv[])
 {
-  if(argc > 2) {
-    fprintf(1,"Usage: sleep [number of ticks]");
+  if (argc > 2) {
+    fprintf(1, "Usage: sleep [number of ticks]");
     exit(1);
   }
   pause(atoi(argv[1]));
