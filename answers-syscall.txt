@@ -1,0 +1,4 @@
+usertrap
+0xf - index pre spustenie funkcie v jadre
+machine mode
+lw a3
