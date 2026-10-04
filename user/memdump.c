@@ -3,7 +3,7 @@
 #include "kernel/fcntl.h"
 
 void memdump(char *fmt, char *data, int len);
-
+void error(char c);
 int
 main(int argc, char *argv[])
 {
@@ -60,5 +60,75 @@ main(int argc, char *argv[])
 void
 memdump(char *fmt, char *data, int len)
 {
-  // Your code here.  `data` holds `len` valid bytes.
+  int l = strlen(fmt);
+  for(int i = 0; i < l;i++){
+    switch (fmt[i]){
+      case 'i':
+        if(len < 4 )
+        {
+          error(fmt[i]);
+        }
+        uint32 num;
+        memcpy(&num,data,sizeof(num));
+        printf("%d\n",num);
+        len -=4;
+        data = &data[4];
+        break;
+      case 'p':
+        if (len < 8){
+          error(fmt[i]);
+        }
+        uint64 num2;
+        memcpy(&num2,data,sizeof(num2));
+        printf("%lx\n",num2);
+        len -= 8;
+        data = &data[8];
+        break;
+      case 'h':
+        if(len < 2)
+        {
+          error(fmt[i]);
+        }
+        uint16 num3;
+        memcpy(&num3,data,sizeof(num3));
+        printf("%d\n",num3);
+        len -=2;
+        data = &data[2];
+        break;
+      case 'c':
+        if(len < 1)
+        {
+          error(fmt[i]);
+        }
+        printf("%c\n",data[0]);
+        len --;
+        data = &data[1];
+        break;
+      case 's':
+        if(len < 8)
+        {
+          error(fmt[i]);
+        }
+        char *s;
+        memcpy(&s,data,sizeof(s));
+        printf("%s\n",s);
+        len -=8;
+        data = &data[8];
+        break;
+      case 'S':
+        int j = 0;
+        while (j < len && data[j] != '\0' )
+        {
+          printf("%c",data[j]);
+          j++;
+        }
+        break;
+    }
+  }
+}
+void 
+error(char c)
+{
+  printf("memdump: not enough data for '%c'\n",c);
+  exit(1);
 }
