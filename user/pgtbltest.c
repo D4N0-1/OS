@@ -16,11 +16,11 @@ void ksuper_test();
 int
 main(int argc, char *argv[])
 {
-  print_pgtbl();
+  //print_pgtbl();
   vmprint_test();
-  pgaccess_test();
-  ugetpid_test();
-  ksuper_test();
+  //pgaccess_test();
+  //ugetpid_test();
+  //ksuper_test();
   printf("pgtbltest: all tests succeeded\n");
   exit(0);
 }

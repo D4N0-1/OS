@@ -146,12 +146,39 @@ walkaddr(pagetable_t pagetable, uint64 va)
   return pa;
 }
 
-
+void
+do_vmprint(pagetable_t pagetable, int level,uint64 addr)
+{
+  const char dots[] = " .. .. ..";
+  const uint64 sizes[] = {4096,4096*512,4096*512*512};
+  for(int i = 0;i<512;i++){
+    pte_t pte = pagetable[i];
+    if(level >=0 && pte & PTE_V)
+    {
+      const char RWXU[] = "-RWXU";
+      char rwxu[5];
+      int ind = 0;
+      for(int i = 1;i<5;i++)
+      {
+        if(PTE_FLAGS(pte) & (1 << 1))
+        {
+          rwxu[ind] = RWXU[i];
+          ind++;
+        }
+      }
+      rwxu[ind] = '\0';
+      uint64 child = PTE2PA(pte);
+      printk("%s%p: pte %p pa %p %s\n",dots + level*3,(void*)(addr + i* sizes[level]),(void*)pte,(void*)child,rwxu);
+      do_vmprint((pagetable_t)child,level-1,addr + 1 * sizes[level]);
+    }
+  }
+}
 #if defined(LAB_PGTBL) || defined(SOL_MMAP) || defined(SOL_COW)
 void
 vmprint(pagetable_t pagetable)
 {
-  // your code here
+  printk("pagetable %p\n",pagetable);
+  do_vmprint(pagetable,2,0x0000000087f22000);
 }
 #endif
 
