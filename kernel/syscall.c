@@ -142,10 +142,28 @@ syscall(void)
   struct proc *p = myproc();
 
   num = p->trapframe->a7;
-  if (num > 0 && num < NELEM(syscalls) && syscalls[num]) {
+  if(num > 0 && num < NELEM(syscalls) && syscalls[num]) {
+
+    // Ak je bit systémového volania nastavený v maske
     if ((p->interpose_mask & (1 << num)) != 0) {
-      p->trapframe->a0 = -1;
-      return;
+      int allowed = 0;
+
+      // Výnimka pre SYS_open a SYS_exec podľa cesty
+      if (num == SYS_open || num == SYS_exec) {
+        char pathbuf[64];
+        // Načítanie 0. argumentu (cesta) prebiehajúceho volania
+        if (argstr(0, pathbuf, sizeof(pathbuf)) >= 0) {
+          if (strncmp(pathbuf, p->interpose_path, sizeof(pathbuf)) == 0) {
+            allowed = 1; // Cesta sa zhoduje, volanie je povolené
+          }
+        }
+      }
+
+      // Ak volanie nie je výslovne povolené výnimkou, odmietneme ho
+      if (!allowed) {
+        p->trapframe->a0 = -1;
+        return;
+      }
     }
     // Use num to lookup the system call function for num, call it,
     // and store its return value in p->trapframe->a0
