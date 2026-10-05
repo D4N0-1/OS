@@ -6,7 +6,7 @@
 int
 main(int argc, char *argv[])
 {
- // Allocate 100 pages to cover all pages freed by secret
+  // Allocate 100 pages to cover all pages freed by secret
   int total_bytes = 100 * 4096;
 
   char *mem = sbrk(total_bytes);
@@ -21,7 +21,7 @@ main(int argc, char *argv[])
   for (int i = 0; i <= total_bytes - prefix_len; i++) {
     if (memcmp(&mem[i], prefix, prefix_len) == 0) {
       char *secret = &mem[i + prefix_len]; // Point directly to the secret value
-      
+
       // Ensure the secret is non-empty before printing
       if (strlen(secret) > 0) {
         printf("%s\n", secret);

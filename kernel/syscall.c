@@ -142,7 +142,7 @@ syscall(void)
   struct proc *p = myproc();
 
   num = p->trapframe->a7;
-  if(num > 0 && num < NELEM(syscalls) && syscalls[num]) {
+  if (num > 0 && num < NELEM(syscalls) && syscalls[num]) {
 
     // Ak je bit systémového volania nastavený v maske
     if ((p->interpose_mask & (1 << num)) != 0) {

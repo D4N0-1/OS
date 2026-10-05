@@ -124,5 +124,6 @@ sys_interpose(void)
   p->interpose_mask |= mask;
   if (p->interpose_path[0] == '\0') {
     safestrcpy(p->interpose_path, path, sizeof(p->interpose_path));
-  }  return 0;
+  }
+  return 0;
 }
